@@ -36,6 +36,7 @@ const Blog = () => {
 
     // Selected blog for detail/edit/delete
     const [selectedBlog, setSelectedBlog] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(null);
 
     // Modals
     const [showDetail, setShowDetail] = useState(false);
@@ -102,7 +103,8 @@ const Blog = () => {
                             <div className="flex justify-between">
                                 <Button
                                     onClick={() => {
-                                        setSelectedBlog(blog);
+                                        setSelectedBlog({ ...blog });
+                                        setSelectedIndex(idx);
                                         setShowDetail(true);
                                     }}
                                 >
@@ -112,6 +114,7 @@ const Blog = () => {
                                     className="bg-danger border-none"
                                     onClick={() => {
                                         setSelectedBlog(blog);
+                                        setSelectedIndex(idx);
                                         setShowDelete(true);
                                     }}
                                 >
@@ -169,7 +172,7 @@ const Blog = () => {
                     <Button
                         className="bg-danger"
                         onClick={() => {
-                            setBlogs(blogs.filter((b) => b !== selectedBlog));
+                            setBlogs(blogs.filter((_, i) => i !== selectedIndex));
                             setShowDelete(false);
                         }}
                     >
@@ -177,6 +180,110 @@ const Blog = () => {
                     </Button>
                     <Button onClick={() => setShowDelete(false)}>Close</Button>
                 </Modal.Footer>
+            </Modal>
+
+            {/* ---------- Edit Modal ---------- */}
+            <Modal show={showEdit} onHide={() => setShowEdit(false)} size="lg" centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Blog</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedBlog && (
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Title</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="title"
+                                    value={selectedBlog.title}
+                                    onChange={(e) => handleChange(e, selectedBlog, setSelectedBlog)}
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Meta</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={2}
+                                    name="meta"
+                                    value={selectedBlog.meta}
+                                    onChange={(e) => handleChange(e, selectedBlog, setSelectedBlog)}
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Description</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={4}
+                                    name="description"
+                                    value={selectedBlog.description}
+                                    onChange={(e) => handleChange(e, selectedBlog, setSelectedBlog)}
+                                />
+                            </Form.Group>
+
+                            {/* Images */}
+                            <Form.Group>
+                                <Form.Label>Images</Form.Label>
+                                <div className="d-flex flex-wrap gap-2 mb-2">
+                                    {selectedBlog.images.map((img, i) => (
+                                        <div key={i} className="position-relative">
+                                            <img
+                                                src={img}
+                                                alt="blog"
+                                                style={{
+                                                    width: "100px",
+                                                    height: "70px",
+                                                    objectFit: "cover",
+                                                    borderRadius: "6px",
+                                                }}
+                                            />
+                                            <Button
+                                                size="sm"
+                                                variant="danger"
+                                                style={{
+                                                    position: "absolute",
+                                                    top: "-8px",
+                                                    right: "-8px",
+                                                    borderRadius: "50%",
+                                                }}
+                                                onClick={() =>
+                                                    handleImageRemove(i, selectedBlog, setSelectedBlog)
+                                                }
+                                            >
+                                                ❌
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                                <Form.Control
+                                    type="file"
+                                    multiple
+                                    onChange={(e) =>
+                                        handleImageAdd(e, selectedBlog, setSelectedBlog)
+                                    }
+                                />
+                            </Form.Group>
+
+                            <div className="flex justify-end gap-2 mt-3">
+                                <Button variant="secondary" onClick={() => setShowEdit(false)}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="success"
+                                    onClick={() => {
+                                        const updated = [...blogs];
+                                        updated[selectedIndex] = selectedBlog;
+                                        setBlogs(updated);
+                                        setShowEdit(false);
+                                    }}
+                                >
+                                    Save
+                                </Button>
+                            </div>
+                        </Form>
+                    )}
+                </Modal.Body>
             </Modal>
 
             {/* ---------- Add Modal ---------- */}
@@ -246,9 +353,7 @@ const Blog = () => {
                                                 right: "-8px",
                                                 borderRadius: "50%",
                                             }}
-                                            onClick={() =>
-                                                handleImageRemove(i, newBlog, setNewBlog)
-                                            }
+                                            onClick={() => handleImageRemove(i, newBlog, setNewBlog)}
                                         >
                                             ❌
                                         </Button>
