@@ -201,7 +201,7 @@ const Blog = () => {
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Label>Meta</Form.Label>
+                                <Form.Label>Meta Desription</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows={2}
@@ -305,11 +305,11 @@ const Blog = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Meta</Form.Label>
+                            <Form.Label>Meta Description</Form.Label>
                             <Form.Control
                                 as="textarea"
                                 rows={2}
-                                placeholder="Enter meta"
+                                placeholder="Enter meta Description"
                                 name="meta"
                                 value={newBlog.meta}
                                 onChange={(e) => handleChange(e, newBlog, setNewBlog)}
