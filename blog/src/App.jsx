@@ -11,7 +11,6 @@ function App() {
 
   return (
     <>
-<<<<<<< HEAD
       <Login />
 
       <Routes>
@@ -19,10 +18,6 @@ function App() {
       </Routes>
 
 
-=======
-      {/* <Blog /> */}
-      <User/>
->>>>>>> 22f9e2239c8d4427c4e0f29b97c8abb878718f59
     </>
   )
 }
