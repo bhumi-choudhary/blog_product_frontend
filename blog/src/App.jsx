@@ -1,8 +1,9 @@
 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { BrowserRouter, Routes, Route } from "react-router";
 import Login from './component/Login';
+import Blog from './component/Blog';
 
 function App() {
 
@@ -10,6 +11,12 @@ function App() {
   return (
     <>
       <Login />
+
+      <Routes>
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
+
+
     </>
   )
 }
