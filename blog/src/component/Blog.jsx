@@ -3,7 +3,6 @@ import { Button, Card, Modal, Carousel, Form } from "react-bootstrap";
 import { MdCancel } from "react-icons/md";
 const Blog = () => {
     const [blogs, setBlogs] = useState([]);
-    console.log(blogs, "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
 
     const [newBlog, setNewBlog] = useState({
         title: "",
