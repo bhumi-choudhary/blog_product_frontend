@@ -1,14 +1,15 @@
 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Blog from './component/Blog';
+
+import Login from './component/Login';
 
 function App() {
 
 
   return (
     <>
-      <Blog />
+      <Login />
     </>
   )
 }
