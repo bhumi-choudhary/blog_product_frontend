@@ -18,7 +18,7 @@ const User = () => {
         description: item.Description,
         tags: item.Tags || [],
         images: item.Product_Images.map(
-          (img) => `http://localhost:7777/public/${img}`
+          (img) => `http://localhost:7777/${img}`
         ),
       }));
       setBlogs(formatted);

@@ -6,17 +6,33 @@ import Blog from "./component/Blog";
 import User from "./component/User";
 import BlogDetail from "./component/BlogDetail";
 import NotFound from "./component/NotFound";
+import ProtectedRoute from "./component/ProtectedRoute";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/admin" element={<Login />} />
-      <Route path="/" element={<User />} />
-      <Route path="/blog/:id" element={<BlogDetail />} />
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+      <Routes>
+        <Route path="/admin" element={<Login />} />
+        <Route
+          path="/blog"
+          element={
+            <ProtectedRoute>
+              <Blog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/blog/:id"
+          element={
+            <ProtectedRoute>
+              <BlogDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<User />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+  
   );
 }
 

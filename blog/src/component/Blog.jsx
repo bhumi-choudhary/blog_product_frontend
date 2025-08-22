@@ -19,6 +19,7 @@ const Blog = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   const fetchBlogs = async () => {
     try {
@@ -31,7 +32,7 @@ const Blog = () => {
           meta: item.Meta_Description,
           description: item.Description,
           images: item.Product_Images.map(
-            (img) => `http://localhost:7777/public/${img}`
+            (img) => `http://localhost:7777/${img}`
           ),
           tags: item.Tags || [],
         }));
@@ -50,24 +51,22 @@ const Blog = () => {
   };
 
   const handleImageAdd = (e, state, setState) => {
-  const files = Array.from(e.target.files);
-  const availableSlots = 5 - state.images.length;
+    const files = Array.from(e.target.files);
+    const availableSlots = 5 - state.images.length;
 
+    const filesToAdd = files.slice(0, availableSlots);
 
-  const filesToAdd = files.slice(0, availableSlots);
+    const imagesWithPreview = filesToAdd.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
 
-  const imagesWithPreview = filesToAdd.map((file) => ({
-    file,
-    preview: URL.createObjectURL(file),
-  }));
+    setState({ ...state, images: [...state.images, ...imagesWithPreview] });
 
-  setState({ ...state, images: [...state.images, ...imagesWithPreview] });
-
-  if (files.length > availableSlots) {
-    toast.error("Maximum 5 images allowed!");
-  }
-};
-
+    if (files.length > availableSlots) {
+      toast.error("Maximum 5 images allowed!");
+    }
+  };
 
   const handleImageRemove = (index, state, setState) => {
     const updatedImages = state.images.filter((_, i) => i !== index);
@@ -111,7 +110,7 @@ const Blog = () => {
           description: blogData.Description,
           tags: blogData.Tags || [],
           images: blogData.Product_Images.map(
-            (img) => `http://localhost:7777/public/${img}`
+            (img) => `http://localhost:7777/${img}`
           ),
         });
       }
@@ -170,7 +169,7 @@ const Blog = () => {
       formData.append("Tags", JSON.stringify(selectedBlog.tags || []));
       const existingImages = selectedBlog.images
         .filter((img) => !img.file)
-        .map((img) => img.replace("http://localhost:7777/public/", ""));
+        .map((img) => img.replace("http://localhost:7777/", ""));
       formData.append("Existing_Images", JSON.stringify(existingImages));
 
       const res = await fetch(`http://localhost:7777/Update?id=${_id}`, {
@@ -195,6 +194,40 @@ const Blog = () => {
     fetchBlogs();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      console.log(token,"!!!!!!!!!!!!!!!!!!!!!!!");
+      
+      if (!token) {
+        toast.error("No token found!");
+        return;
+      }
+
+      const response = await fetch("http://localhost:7777/Logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Logged out successfully!");
+        localStorage.removeItem("authToken");
+        setShowLogout(false);
+        window.location.href = "/admin";
+      } else {
+        toast.error(data.message || "Logout failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Something went wrong");
+    }
+  };
+
   return (
     <div className="container my-5">
       <ToastContainer />
@@ -204,15 +237,9 @@ const Blog = () => {
           Our Latest <span className="text-purple-600">Blogs</span>
         </h2>
       </div>
-
-      <div className="flex justify-end mb-4">
-        <Button
-          onClick={() => {
-            setShowAdd(true);
-          }}
-        >
-          Add Blog
-        </Button>
+      <div className="flex justify-end gap-4 mb-4">
+        <Button onClick={() => setShowLogout(true)}>Logout</Button>
+        <Button onClick={() => setShowAdd(true)}>Add Blog</Button>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -671,6 +698,30 @@ const Blog = () => {
             </div>
           </Form>
         </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showLogout}
+        onHide={() => setShowLogout(false)}
+        size="md"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Logout</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>Are you sure you want to logout?</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowLogout(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );
