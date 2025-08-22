@@ -218,6 +218,7 @@ const Blog = () => {
         toast.success("Logged out successfully!");
         localStorage.removeItem("authToken");
         setShowLogout(false);
+
         window.location.href = "/admin";
       } else {
         toast.error(data.message || "Logout failed");

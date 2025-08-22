@@ -10,29 +10,20 @@ import ProtectedRoute from "./component/ProtectedRoute";
 
 function App() {
   return (
-
-      <Routes>
-        <Route path="/admin" element={<Login />} />
-        <Route
-          path="/blog"
-          element={
-            <ProtectedRoute>
-              <Blog />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/blog/:id"
-          element={
-            <ProtectedRoute>
-              <BlogDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/" element={<User />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-  
+    <Routes>
+      <Route path="/admin" element={<Login />} />
+      <Route
+        path="/blog"
+        element={
+          <ProtectedRoute>
+            <Blog />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/blog/:id" element={<BlogDetail />} />
+      <Route path="/" element={<User />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
